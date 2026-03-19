@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CutNote - AI 자막 생성 데스크톱 앱</title>
+  <meta name="description" content="영상을 업로드하면 화자를 구분하여 자막을 자동 생성합니다. 완전한 오프라인 처리로 데이터가 안전합니다.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0F1115;
+      --surface: #161A22;
+      --surface-hover: #1C2129;
+      --border: #2A2F3A;
+      --primary: #2F6FED;
+      --primary-hover: #4A85F0;
+      --text: #E8EAED;
+      --text-muted: #9CA3AF;
+      --accent-blue: #3B82F6;
+      --accent-green: #10B981;
+      --accent-purple: #8B5CF6;
+      --accent-orange: #F97316;
+    }
+
+    body {
+      font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      margin-left: 24px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 36px;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: var(--text-muted);
+    }
+
+    /* Features */
+    .features {
+      padding: 60px 0;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .icon-blue { background: rgba(59, 130, 246, 0.15); }
+    .icon-green { background: rgba(16, 185, 129, 0.15); }
+    .icon-purple { background: rgba(139, 92, 246, 0.15); }
+    .icon-orange { background: rgba(249, 115, 22, 0.15); }
+
+    /* Pricing */
+    .pricing {
+      padding: 60px 0;
+    }
+
+    .pricing h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .pricing > .container > p {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--primary);
+      position: relative;
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+
+    .pricing-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .pricing-card .price {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 12px 0;
+    }
+
+    .pricing-card .price span {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .pricing-card ul {
+      list-style: none;
+      margin: 20px 0;
+    }
+
+    .pricing-card ul li {
+      font-size: 14px;
+      color: var(--text-muted);
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pricing-card ul li::before {
+      content: "\2713";
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+
+    .pricing-card .btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer nav a {
+      font-size: 13px;
+      margin-left: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 30px; }
+      .hero p { font-size: 16px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      header .container { flex-direction: column; gap: 12px; }
+      footer .container { flex-direction: column; text-align: center; }
+      footer nav a { margin: 0 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <a href="/" class="logo">
+        <div class="logo-icon">C</div>
+        <span class="logo-text">CutNote</span>
+      </a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="mailto:kanghoil@naver.com">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>
+          AI <span class="gradient">Speaker-Diarized</span><br>
+          Subtitle Generator
+        </h1>
+        <p>
+          Upload a video and get auto-generated subtitles with speaker identification.
+          Fully offline processing keeps your data safe on your PC.
+        </p>
+        <div class="cta-buttons">
+          <a href="#pricing" class="btn btn-primary">
+            Get CutNote
+          </a>
+          <a href="#features" class="btn btn-secondary">
+            Learn More
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="container">
+        <h2>Features</h2>
+        <div class="feature-grid">
+
+          <div class="feature-card">
+            <div class="feature-icon icon-blue">&#127908;</div>
+            <h3>Automatic Transcription</h3>
+            <p>Upload MP4, MOV, or MKV files and get accurate subtitles powered by state-of-the-art ASR models.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon icon-green">&#128101;</div>
+            <h3>Speaker Diarization</h3>
+            <p>Automatically identify who is speaking. Each speaker gets a unique label and color for easy reading.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon icon-purple">&#128221;</div>
+            <h3>Timeline Editor</h3>
+            <p>Edit subtitles in real-time alongside video playback. Adjust timing, text, and speaker assignments.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon icon-orange">&#128274;</div>
+            <h3>100% Offline</h3>
+            <p>All processing happens on your local PC. No data is ever sent to external servers. Your content stays private.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon icon-blue">&#128228;</div>
+            <h3>Multiple Export Formats</h3>
+            <p>Export your subtitles in SRT, VTT, or JSON format. Ready for YouTube, Vimeo, or any video platform.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon icon-green">&#9201;</div>
+            <h3>Undo &amp; Redo</h3>
+            <p>Full editing history with unlimited undo/redo. Auto-save ensures you never lose your work.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+      <div class="container">
+        <h2>Pricing</h2>
+        <p>Start for free, upgrade when you need more.</p>
+        <div class="pricing-grid">
+
+          <div class="pricing-card">
+            <h3>Free</h3>
+            <div class="price">$0</div>
+            <ul>
+              <li>Videos up to 5 minutes</li>
+              <li>SRT export</li>
+              <li>Basic speaker diarization</li>
+              <li>Timeline editor</li>
+            </ul>
+            <a href="#" class="btn btn-secondary">Download</a>
+          </div>
+
+          <div class="pricing-card featured">
+            <div class="pricing-badge">POPULAR</div>
+            <h3>Pro</h3>
+            <div class="price">$9.99 <span>/ month</span></div>
+            <ul>
+              <li>Unlimited video length</li>
+              <li>SRT, VTT, JSON export</li>
+              <li>Advanced speaker diarization</li>
+              <li>Face-based speaker matching</li>
+              <li>Priority support</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Get Pro</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 CutNote. All rights reserved.</p>
+      <nav>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="mailto:kanghoil@naver.com">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>
