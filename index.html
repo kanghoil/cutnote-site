@@ -434,7 +434,7 @@
       <div class="container">
         <h2>Pricing</h2>
         <p>Start for free, upgrade when you need more.</p>
-        <div class="pricing-grid">
+        <div class="pricing-grid" style="max-width:960px; grid-template-columns: repeat(3, 1fr);">
 
           <div class="pricing-card">
             <h3>Free</h3>
@@ -448,16 +448,30 @@
             <a href="#" class="btn btn-secondary">Download</a>
           </div>
 
-          <div class="pricing-card featured">
-            <div class="pricing-badge">POPULAR</div>
-            <h3>Pro</h3>
+          <div class="pricing-card">
+            <h3>Standard</h3>
             <div class="price">$9.99 <span>/ month</span></div>
-            <p style="font-size:14px; color:var(--text-muted); margin-top:-4px;">or <strong style="color:var(--text);">$99.99</strong> / year <span style="color:var(--accent-green); font-size:12px; font-weight:600;">Save 17%</span></p>
+            <p style="font-size:14px; color:var(--text-muted); margin-top:-4px;">or <strong style="color:var(--text);">$95.88</strong> / year <span style="color:var(--accent-green); font-size:12px; font-weight:600;">Save 20%</span></p>
             <ul>
               <li>Unlimited video length</li>
               <li>SRT, VTT, JSON export</li>
+              <li>Speaker diarization</li>
+              <li>Timeline editor</li>
+              <li>Email support</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Get Standard</a>
+          </div>
+
+          <div class="pricing-card featured">
+            <div class="pricing-badge">BEST VALUE</div>
+            <h3>Pro</h3>
+            <div class="price">$19.99 <span>/ month</span></div>
+            <p style="font-size:14px; color:var(--text-muted); margin-top:-4px;">or <strong style="color:var(--text);">$191.88</strong> / year <span style="color:var(--accent-green); font-size:12px; font-weight:600;">Save 20%</span></p>
+            <ul>
+              <li>Everything in Standard</li>
               <li>Advanced speaker diarization</li>
               <li>Face-based speaker matching</li>
+              <li>Batch processing</li>
               <li>Priority support</li>
             </ul>
             <a href="#" class="btn btn-primary">Get Pro</a>
